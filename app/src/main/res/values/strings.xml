@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">PartyCenter</string>
+
+    <string name="bar_main">主页</string>
+    <string name="bar_around">附近</string>
+    <string name="bar_user">个人</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
