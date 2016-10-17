@@ -35,17 +35,17 @@ public class Api {
     private String host = DEFAULT_HOST;
     private String port = DEFAULT_PORT;
 
-    public static final int COMMENT=0;
-    public static final int DANMU=1;
+    public static final int COMMENT = 0;
+    public static final int DANMU = 1;
 
-    public static final int REGISTER_USERNAME_CONFLICT=0;//注册,用户名被使用
-    public static final int REGISTER_EMAIL_CONFLICT=1;//注册,邮箱已经被使用
-    public static final int REGISTER_OK=2;//注册成功
-    public static final int REGISTER_SYS_ERR=3;//注册,服务器错误.
+    public static final int REGISTER_USERNAME_CONFLICT = 0;//注册,用户名被使用
+    public static final int REGISTER_EMAIL_CONFLICT = 1;//注册,邮箱已经被使用
+    public static final int REGISTER_OK = 2;//注册成功
+    public static final int REGISTER_SYS_ERR = 3;//注册,服务器错误.
 
-    public static final int LOGIN_USERNAME_NOEXIST=0;//登录.用户不存在
-    public static final int LOGIN_PASSRORD_WRONG=1;//登录,密码错误
-    public static final int LOGIN_OK=2;//登录,成功
+    public static final int LOGIN_USERNAME_NOEXIST = 0;//登录.用户不存在
+    public static final int LOGIN_PASSRORD_WRONG = 1;//登录,密码错误
+    public static final int LOGIN_OK = 2;//登录,成功
 
 
     private RequestQueue queue;
@@ -108,62 +108,65 @@ public class Api {
 
     /**
      * 登录方法
+     *
      * @param userNameOrEmail 用户名或者邮箱
-     * @param password 密码
-     * @param listener 回调, 返回状态,详细看前面的常量
+     * @param password        密码
+     * @param listener        回调, 返回状态,详细看前面的常量
      */
     public void login(String userNameOrEmail, String password, OnResultListener<Integer> listener) {
         listener.getResult(new Integer(LOGIN_OK));
-   //     login((host+":"+port+"/"+USER_URL,userNameOrEmail,password,listener);
+        //     login((host+":"+port+"/"+USER_URL,userNameOrEmail,password,listener);
 
     }
 
 
     /**
      * 发送评论(需要先判断是否登录了才能执行这个函数)
-     * @param partyID 评论的晚会ID
+     *
+     * @param partyID  评论的晚会ID
      * @param userName 发送评论的用户名
-     * @param comment 评论内容
+     * @param comment  评论内容
      */
-    public void sendComment(int partyID,String userName,String comment,OnResultListener<Boolean> listener){
+    public void sendComment(int partyID, String userName, String comment, OnResultListener<Boolean> listener) {
         listener.getResult(new Boolean(true));
     }
 
     /**
      * 发送弹幕,需要先登录才能执行这个函数
-     * @param partyID 发送弹幕的晚会ID
+     *
+     * @param partyID  发送弹幕的晚会ID
      * @param userName 发送弹幕的用户名
-     * @param danmu 弹幕信息
+     * @param danmu    弹幕信息
      */
-    public void sendDanmu(int partyID, String userName, Danmu danmu,OnResultListener<Boolean> listener){
+    public void sendDanmu(int partyID, String userName, Danmu danmu, OnResultListener<Boolean> listener) {
         listener.getResult(new Boolean(true));
 
     }
 
     /**
      * 注册函数
+     *
      * @param userName 注册的用户名
-     * @param email 邮箱
+     * @param email    邮箱
      * @param password 密码
      * @param listener 回调 返回整数,对应不同状态,详细看前面的常量
-     *
      */
-    public void register(String userName,String email,String password,OnResultListener<Integer> listener){
+    public void register(String userName, String email, String password, OnResultListener<Integer> listener) {
         listener.getResult(new Integer(REGISTER_OK));
     }
 
     /**
      * 退出登录
      */
-    public void logout(){
-        JSONObject sendObj=new JSONObject();
+    public void logout() {
+        JSONObject sendObj = new JSONObject();
         try {
-            sendObj.put("method","logout");
+            sendObj.put("method", "logout");
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        JsonObjectRequest request=new JsonObjectRequest(Request.Method.POST, host + ":" + port + "/" + USER_URL, sendObj, new Response.Listener<JSONObject>() {
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, host + ":" + port + "/" + USER_URL, sendObj, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
 
@@ -180,47 +183,45 @@ public class Api {
 
     /**
      * 获取用户信息
+     *
      * @param listener
      */
-    public void getUserInfo(OnResultListener<User> listener){
+    public void getUserInfo(OnResultListener<User> listener) {
 
     }
 
 
-
-
-
-    private void register(String url,String userName,String email,String password,OnResultListener<Integer> listener){
+    private void register(String url, String userName, String email, String password, OnResultListener<Integer> listener) {
 
     }
 
 
-    private void sendDanmu(String url,int partyID,String userName,Danmu danmu,OnResultListener<Boolean> listener){
+    private void sendDanmu(String url, int partyID, String userName, Danmu danmu, OnResultListener<Boolean> listener) {
 
 
     }
 
     private void login(String url, String userNameOrEmail, String password, OnResultListener<Integer> listener) {
-        JSONObject sendObj=new JSONObject();
+        JSONObject sendObj = new JSONObject();
         try {
-            sendObj.put("method","login");
-            JSONObject data=new JSONObject();
+            sendObj.put("method", "login");
+            JSONObject data = new JSONObject();
 
-            if (userNameOrEmail.contains("@")){
-                data.put("email",userNameOrEmail);
-                data.put("name","");
-            }else {
-                data.put("name",userNameOrEmail);
-                data.put("email","");
+            if (userNameOrEmail.contains("@")) {
+                data.put("email", userNameOrEmail);
+                data.put("name", "");
+            } else {
+                data.put("name", userNameOrEmail);
+                data.put("email", "");
             }
 
-            sendObj.put("userInfo",data);
+            sendObj.put("userInfo", data);
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        JsonObjectRequest request=new JsonObjectRequest(Request.Method.POST, url, sendObj, new Response.Listener<JSONObject>() {
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, sendObj, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
 
@@ -234,7 +235,6 @@ public class Api {
 
 
         queue.add(request);
-
 
 
     }
@@ -363,7 +363,7 @@ public class Api {
         party.ID = 1;
         party.name = "没什么名字1";
         party.time = "2016年10月17日 18:21:22";
-        party.type="歌舞";
+        party.type = "歌舞";
         party.location = "成都XXXX地区";
         party.poster = "http://img4q.duitang.com/uploads/item/201506/14/20150614214047_BA5Zy.jpeg";
 
@@ -374,18 +374,18 @@ public class Api {
     private Party[] getSomeMyParties() {
         //TODO:假数据
         Party[] party = new Party[2];
-        party[0]=new Party();
-        party[1]=new Party();
+        party[0] = new Party();
+        party[1] = new Party();
         party[0].ID = 1;
         party[0].name = "没什么名字1";
         party[0].time = "2016年10月17日 18:20:29";
         party[0].location = "成都XXXX地区";
-        party[0].type="歌舞";
+        party[0].type = "歌舞";
         party[0].poster = "http://img4q.duitang.com/uploads/item/201506/14/20150614214047_BA5Zy.jpeg";
 
         party[1].ID = 2;
         party[1].name = "没什么名字2";
-        party[1].type="歌舞";
+        party[1].type = "歌舞";
         party[1].time = "2016年10月17日 18:20:36";
         party[1].location = "成都XXXX地区";
         party[1].poster = "http://img4q.duitang.com/uploads/item/201506/14/20150614214047_BA5Zy.jpeg";
