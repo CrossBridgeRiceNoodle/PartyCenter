@@ -12,7 +12,7 @@ public class App extends Application {
         return context;
     }
 
-    private static Context context;
+    private static Context context;//全局的上下文获取
 
     @Override
     public void onCreate() {

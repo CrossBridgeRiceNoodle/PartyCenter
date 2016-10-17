@@ -12,6 +12,10 @@ import com.crossbridgericenoodle.partycenter.model.Party;
 
 import java.util.List;
 
+/**
+ * 这个是附近晚会的页面
+ * TODO: 附近晚会
+ */
 public class AroundPartyFragment extends Fragment {
     List<Party> partyList;
 

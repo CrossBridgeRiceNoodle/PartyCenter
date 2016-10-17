@@ -20,6 +20,10 @@ import java.util.Collections;
 import java.util.List;
 
 
+/**
+ *
+ * TODO: 最新的晚会
+ */
 public class LatestPartyFragment extends Fragment {
 
     private View view;
