@@ -367,7 +367,8 @@ public class Api {
         Party party = new Party();
         party.ID = 1;
         party.name = "没什么名字1";
-        party.time = "";
+        party.time = "2016年10月17日 18:21:22";
+        party.type="歌舞";
         party.location = "成都XXXX地区";
         party.poster = "http://img4q.duitang.com/uploads/item/201506/14/20150614214047_BA5Zy.jpeg";
 
@@ -378,15 +379,19 @@ public class Api {
     private Party[] getSomeMyParties() {
         //TODO:假数据
         Party[] party = new Party[2];
+        party[0]=new Party();
+        party[1]=new Party();
         party[0].ID = 1;
         party[0].name = "没什么名字1";
-        party[0].time = "";
+        party[0].time = "2016年10月17日 18:20:29";
         party[0].location = "成都XXXX地区";
+        party[0].type="歌舞";
         party[0].poster = "http://img4q.duitang.com/uploads/item/201506/14/20150614214047_BA5Zy.jpeg";
 
         party[1].ID = 2;
         party[1].name = "没什么名字2";
-        party[1].time = "";
+        party[1].type="歌舞";
+        party[1].time = "2016年10月17日 18:20:36";
         party[1].location = "成都XXXX地区";
         party[1].poster = "http://img4q.duitang.com/uploads/item/201506/14/20150614214047_BA5Zy.jpeg";
 

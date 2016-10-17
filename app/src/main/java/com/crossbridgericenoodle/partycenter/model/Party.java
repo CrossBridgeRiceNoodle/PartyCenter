@@ -16,7 +16,7 @@ public class Party {
     public Position location_lo_la;
     public String type;
     public String publisher;
-    public List<ProgrammeInfo> programmeInfos=new ArrayList<>();
+    public List<ProgrammeInfo> programsInfo=new ArrayList<>();
     public String host;
     public int vote;
     public String poster;
