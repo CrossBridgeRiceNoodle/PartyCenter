@@ -1,7 +1,5 @@
 package com.crossbridgericenoodle.partycenter;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.util.Log;
 
 import com.android.volley.Request;
@@ -21,9 +19,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -111,8 +106,8 @@ public class Api {
     public void getNewParties(int numOfParties, OnResultListener<List<Party>> listener) {
         //TODO:假数据.
 
-        //     listener.getResult(getSomeMyParties());
-        getNewParties(host + ":" + port + "/" + PARTY_URL, numOfParties, listener);
+        listener.getResult(getSomeMyParties());
+//        getNewParties(host + ":" + port + "/" + PARTY_URL, numOfParties, listener);
 
     }
 
@@ -467,7 +462,7 @@ public class Api {
                     party.comments = response.getString("comments");
 
 
-                    party.poster = host+":"+port+response.getString("poster");
+                    party.poster = host + ":" + port + response.getString("poster");
 
 
                 } catch (JSONException e) {
@@ -512,10 +507,10 @@ public class Api {
                         Party party = new Party();
 
                         party.ID = response.getJSONObject(i).getInt("ID");
-                        party.name=response.getJSONObject(i).getString("name");
-                        party.time=response.getJSONObject(i).getString("time");
-                        party.type=response.getJSONObject(i).getString("type");
-                        party.poster=host+":"+port+response.getJSONObject(i).getString("poster");
+                        party.name = response.getJSONObject(i).getString("name");
+                        party.time = response.getJSONObject(i).getString("time");
+                        party.type = response.getJSONObject(i).getString("type");
+                        party.poster = host + ":" + port + response.getJSONObject(i).getString("poster");
 
                         list.add(party);
                     }
@@ -556,7 +551,7 @@ public class Api {
     private List<Party> getSomeMyParties() {
         //TODO:假数据
 
-        List<Party> parties=new ArrayList<>();
+        List<Party> parties = new ArrayList<>();
         Party party = new Party();
 
         party.ID = 1;
@@ -564,10 +559,9 @@ public class Api {
         party.time = "2016年10月17日 18:20:29";
         party.location = "成都XXXX地区";
         party.type = "歌舞";
-          party.poster = "http://img4q.duitang.com/uploads/item/201506/14/20150614214047_BA5Zy.jpeg";
+        party.poster = "http://img4q.duitang.com/uploads/item/201506/14/20150614214047_BA5Zy.jpeg";
 
         parties.add(party);
-
 
 
         return parties;

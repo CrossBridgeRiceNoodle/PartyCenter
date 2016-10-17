@@ -8,8 +8,10 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.crossbridgericenoodle.partycenter.App;
 import com.crossbridgericenoodle.partycenter.R;
 import com.crossbridgericenoodle.partycenter.model.Party;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -58,7 +60,7 @@ public class LatestPartyAdapter extends BaseAdapter {
             viewHolder.time = (TextView) view.findViewById(R.id.tv_latest_time);
             viewHolder.location = (TextView) view.findViewById(R.id.tv_latest_location);
             viewHolder.type = (TextView) view.findViewById(R.id.tv_latest_type);
-            //TODO 海报View
+            viewHolder.poster = (ImageView) view.findViewById(R.id.iv_latest_poster);
             view.setTag(viewHolder);
         } else {
             view = convertView;
@@ -68,7 +70,7 @@ public class LatestPartyAdapter extends BaseAdapter {
         viewHolder.time.setText(party.time);
         viewHolder.location.setText(party.location);
         viewHolder.type.setText(party.type);
-        //TODO viewHolder.poster
+        Picasso.with(App.getContext()).load(party.poster).into(viewHolder.poster);
         return view;
     }
 

@@ -41,11 +41,10 @@ public class LatestPartyFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_latest_party, container, false);
         listView = (ListView) view.findViewById(R.id.lv_latest_party);
 
-        Api.getInstance().getNewParties(10, new Api.OnResultListener<Party[]>() {
+        Api.getInstance().getNewParties(10, new Api.OnResultListener<List<Party>>() {
             @Override
-            public void getResult(Party[] parties) {
-                latestPartyList = new ArrayList<>();
-                Collections.addAll(latestPartyList, parties);
+            public void getResult(List<Party> parties) {
+                latestPartyList = parties;
                 LatestPartyAdapter adapter = new LatestPartyAdapter(latestPartyList, getContext());
                 listView.setAdapter(adapter);
             }
@@ -54,7 +53,6 @@ public class LatestPartyFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Party party = latestPartyList.get(position);
-                //TODO listView.setOnItemClickListener
                 Intent intent = new Intent(getContext(), PartyActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("party_selected", party);
