@@ -9,6 +9,10 @@ import android.view.ViewGroup;
 
 import com.crossbridgericenoodle.partycenter.R;
 
+/**
+ * 这个是附近晚会的页面
+ * TODO: 附近晚会
+ */
 public class AroundPartyFragment extends Fragment {
 
 

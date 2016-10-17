@@ -19,6 +19,9 @@ import com.roughike.bottombar.OnTabSelectListener;
 
 import java.util.Date;
 
+/**
+ * TODO: 三个页面的逻辑
+ */
 public class MainActivity extends AppCompatActivity {
 
     private BottomBar bottomBar = null;
@@ -49,12 +52,6 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case R.id.tab_info:
                         viewPager.setCurrentItem(2);
-                        Api.getInstance().getNearbyParties(new Position("104.067852,30.680346"), 99999, "歌舞", new Date(), new Api.OnResultListener<Party>() {
-                            @Override
-                            public void getResult(Party party) {
-
-                            }
-                        });
                         break;
 
                 }

@@ -11,6 +11,10 @@ import android.view.ViewGroup;
 import com.crossbridgericenoodle.partycenter.R;
 
 
+/**
+ *
+ * TODO: 最新的晚会
+ */
 public class LatestPartyFragment extends Fragment {
 
     public LatestPartyFragment() {

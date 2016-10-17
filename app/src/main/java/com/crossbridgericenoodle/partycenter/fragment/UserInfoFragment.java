@@ -11,6 +11,9 @@ import android.view.ViewGroup;
 import com.crossbridgericenoodle.partycenter.R;
 
 
+/**
+ * TODO:暂时不写,这个我没写好接口
+ */
 public class UserInfoFragment extends Fragment {
 
 
