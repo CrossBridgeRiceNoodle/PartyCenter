@@ -1,6 +1,5 @@
 package com.crossbridgericenoodle.partycenter.fragment;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,6 +11,7 @@ import android.widget.ListView;
 
 import com.crossbridgericenoodle.partycenter.Api;
 import com.crossbridgericenoodle.partycenter.R;
+import com.crossbridgericenoodle.partycenter.activity.PartyActivity;
 import com.crossbridgericenoodle.partycenter.adapter.LatestPartyAdapter;
 import com.crossbridgericenoodle.partycenter.model.Party;
 
@@ -21,7 +21,6 @@ import java.util.List;
 
 
 /**
- *
  * TODO: 最新的晚会
  */
 public class LatestPartyFragment extends Fragment {
@@ -56,7 +55,7 @@ public class LatestPartyFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Party party = latestPartyList.get(position);
                 //TODO listView.setOnItemClickListener
-                Intent intent = new Intent(getContext(), Activity.class);
+                Intent intent = new Intent(getContext(), PartyActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("party_selected", party);
                 intent.putExtras(bundle);

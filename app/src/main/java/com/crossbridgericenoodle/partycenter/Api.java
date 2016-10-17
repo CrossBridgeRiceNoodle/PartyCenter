@@ -1,15 +1,12 @@
 package com.crossbridgericenoodle.partycenter;
 
-import android.app.admin.DeviceAdminInfo;
 import android.util.Log;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.Volley;
 import com.crossbridgericenoodle.partycenter.model.Danmu;
 import com.crossbridgericenoodle.partycenter.model.Party;
@@ -23,9 +20,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by FENG-MASTER on 2016/10/15 0015.
@@ -338,7 +333,7 @@ public class Api {
 
                     JSONArray array = response.getJSONArray("shows");
                     for (int i = 0; i < array.length(); i++) {
-                        party.programmeInfos.add(new ProgrammeInfo(array.getJSONObject(i)));
+                        party.programsInfo.add(new ProgrammeInfo(array.getJSONObject(i)));
                     }
 
                     party.comments = response.getString("comments");
