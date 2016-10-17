@@ -8,8 +8,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.crossbridgericenoodle.partycenter.R;
+import com.crossbridgericenoodle.partycenter.model.Party;
+
+import java.util.List;
 
 public class AroundPartyFragment extends Fragment {
+    List<Party> partyList;
 
 
     public AroundPartyFragment() {
@@ -22,8 +26,6 @@ public class AroundPartyFragment extends Fragment {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_around_party, container, false);
     }
-
-
 
 
 }
