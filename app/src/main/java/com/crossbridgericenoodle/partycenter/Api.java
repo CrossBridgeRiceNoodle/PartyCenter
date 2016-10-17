@@ -1,11 +1,14 @@
 package com.crossbridgericenoodle.partycenter;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.crossbridgericenoodle.partycenter.model.Danmu;
@@ -18,6 +21,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -42,6 +48,9 @@ public class Api {
     public static final int REGISTER_EMAIL_CONFLICT = 1;//注册,邮箱已经被使用
     public static final int REGISTER_OK = 2;//注册成功
     public static final int REGISTER_SYS_ERR = 3;//注册,服务器错误.
+
+    public static final int REGISTER_TYPE_AUDIENCE = 1;
+    public static final int REGISTER_TYPE_HOST = 0;
 
     public static final int LOGIN_USERNAME_NOEXIST = 0;//登录.用户不存在
     public static final int LOGIN_PASSRORD_WRONG = 1;//登录,密码错误
@@ -74,7 +83,7 @@ public class Api {
      * @param nowDate      现在的时间
      * @param listener     回调
      */
-    public void getNearbyParties(Position position, int range, int obtainedRows, int row, String type, Date nowDate, OnResultListener<Party[]> listener) {
+    public void getNearbyParties(Position position, int range, int obtainedRows, int row, String type, Date nowDate, OnResultListener<List<Party>> listener) {
         listener.getResult(getSomeMyParties());
 
         //       getNearbyParties(host+":"+port+"/"+PARTY_URL,position,range,obtainedRows,row,type,nowDate,listener);
@@ -99,10 +108,11 @@ public class Api {
      * @param numOfParties 最多需要多少个最新的晚会信息(不一定返回那么多个)
      * @param listener     回调
      */
-    public void getNewParties(int numOfParties, OnResultListener<Party[]> listener) {
+    public void getNewParties(int numOfParties, OnResultListener<List<Party>> listener) {
         //TODO:假数据.
 
-        listener.getResult(getSomeMyParties());
+        //     listener.getResult(getSomeMyParties());
+        getNewParties(host + ":" + port + "/" + PARTY_URL, numOfParties, listener);
 
     }
 
@@ -123,11 +133,10 @@ public class Api {
     /**
      * 发送评论(需要先判断是否登录了才能执行这个函数)
      *
-     * @param partyID  评论的晚会ID
-     * @param userName 发送评论的用户名
-     * @param comment  评论内容
+     * @param partyID 评论的晚会ID
+     * @param comment 评论内容
      */
-    public void sendComment(int partyID, String userName, String comment, OnResultListener<Boolean> listener) {
+    public void sendComment(int partyID, String comment, OnResultListener<Boolean> listener) {
         listener.getResult(new Boolean(true));
     }
 
@@ -151,12 +160,12 @@ public class Api {
      * @param password 密码
      * @param listener 回调 返回整数,对应不同状态,详细看前面的常量
      */
-    public void register(String userName, String email, String password, OnResultListener<Integer> listener) {
+    public void register(String userName, String email, String password, int type, OnResultListener<Integer> listener) {
         listener.getResult(new Integer(REGISTER_OK));
     }
 
     /**
-     * 退出登录
+     * 退出登录,完成
      */
     public void logout() {
         JSONObject sendObj = new JSONObject();
@@ -191,17 +200,133 @@ public class Api {
     }
 
 
-    private void register(String url, String userName, String email, String password, OnResultListener<Integer> listener) {
+    private void sendComment(String url, int partyID, String comment, final OnResultListener<Integer> listener) {
+        //TODO:完成,未测试
+        JSONObject sendObj = new JSONObject();
+        try {
+            sendObj.put("method", "sendComment");
+            JSONObject commentInfo = new JSONObject();
+            commentInfo.put("partyID", partyID);
+            commentInfo.put("type", COMMENT);
+
+            JSONObject contentInfo = new JSONObject();
+            contentInfo.put("content", comment);
+            commentInfo.put("contentInfo", contentInfo);
+            sendObj.put("commentInfo", commentInfo);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, sendObj, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    listener.getResult(new Integer(response.getInt("commentRes")));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+
+        queue.add(request);
 
     }
 
+    private void sendDanmu(String url, int partyID, Danmu danmu, final OnResultListener<Boolean> listener) {
 
-    private void sendDanmu(String url, int partyID, String userName, Danmu danmu, OnResultListener<Boolean> listener) {
+        JSONObject sendObj = new JSONObject();
+        try {
+            sendObj.put("method", "sendComment");
+            JSONObject commentInfo = new JSONObject();
+            commentInfo.put("partyID", partyID);
+            commentInfo.put("type", DANMU);
+
+            JSONObject contentInfo = new JSONObject();
+            contentInfo.put("content", danmu.content);
+            contentInfo.put("danmuType", danmu.type);
+            contentInfo.put("danmuSize", danmu.size);
+            contentInfo.put("danmuColor", danmu.color);
+
+
+            commentInfo.put("contentInfo", contentInfo);
+            sendObj.put("commentInfo", commentInfo);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, sendObj, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    if (response.getInt("commentRes") == 1) {
+                        listener.getResult(new Boolean(true));
+                    } else {
+                        listener.getResult(new Boolean(false));
+
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("1", "1");
+            }
+        });
+
+        queue.add(request);
+
+
+    }
+
+    private void register(String url, String userName, String email, int type, int sex, String password, final OnResultListener<Integer> listener) {
+        //TODO:完成了,未测试
+        JSONObject sendObj = new JSONObject();
+        try {
+            sendObj.put("method", "register");
+            JSONObject userInfo = new JSONObject();
+            userInfo.put("name", userName);
+            userInfo.put("userType", type);
+            userInfo.put("email", email);
+            userInfo.put("password", password);
+            userInfo.put("sex", sex);
+            sendObj.put("userInfo", userInfo);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, sendObj, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    listener.getResult(new Integer(response.getInt("state")));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+
+        queue.add(request);
 
 
     }
 
     private void login(String url, String userNameOrEmail, String password, OnResultListener<Integer> listener) {
+        //TODO:完成 但未测试
         JSONObject sendObj = new JSONObject();
         try {
             sendObj.put("method", "login");
@@ -239,8 +364,8 @@ public class Api {
 
     }
 
-    private void getNearbyParties(String url, Position position, int range, int obtainedRows, int row, String type, Date nowDate, OnResultListener<Party[]> listener) {
-
+    private void getNearbyParties(String url, Position position, int range, int obtainedRows, int row, String type, Date nowDate, final OnResultListener<List<Party>> listener) {
+        //已经测试通过
         JSONObject objectSend = new JSONObject();
         JSONObject date = new JSONObject();
 
@@ -289,6 +414,8 @@ public class Api {
                     e.printStackTrace();
                 }
 
+                listener.getResult(partyList);
+
 
             }
         }, new Response.ErrorListener() {
@@ -304,7 +431,8 @@ public class Api {
 
     }
 
-    private void getPartyInfo(String url, int ID, final OnResultListener<Party> listener) {
+    private void getPartyInfo(final String url, int ID, final OnResultListener<Party> listener) {
+        //TODO:完成 未测试
         JSONObject sendJson = new JSONObject();
         try {
             sendJson.put("method", "getPartyDetailInfo");
@@ -337,7 +465,9 @@ public class Api {
                     }
 
                     party.comments = response.getString("comments");
-                    party.poster = response.getString("posterURL");
+
+
+                    party.poster = host+":"+port+response.getString("poster");
 
 
                 } catch (JSONException e) {
@@ -356,6 +486,59 @@ public class Api {
         queue.add(request);
     }
 
+    private void getNewParties(String url, int num, final OnResultListener<List<Party>> listener) {
+        //TODO:未测试
+        /*
+        * 传出格式
+        * method:getNewParties
+        * num:要获取最新多少的晚会
+        * */
+        JSONObject sendobj = new JSONObject();
+
+        try {
+            sendobj.put("method", "getNewParties");
+            sendobj.put("num", num);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        JsonArrayRequest request = new JsonArrayRequest(Request.Method.POST, url, sendobj, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                List<Party> list = new ArrayList<>();
+                int len = response.length();
+                try {
+                    for (int i = 0; i < len; i++) {
+                        Party party = new Party();
+
+                        party.ID = response.getJSONObject(i).getInt("ID");
+                        party.name=response.getJSONObject(i).getString("name");
+                        party.time=response.getJSONObject(i).getString("time");
+                        party.type=response.getJSONObject(i).getString("type");
+                        party.poster=host+":"+port+response.getJSONObject(i).getString("poster");
+
+                        list.add(party);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                listener.getResult(list);
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("11", "11");
+            }
+        });
+
+
+        queue.add(request);
+
+
+    }
+
 
     private Party getMyParty() {
         //TODO:假数据.
@@ -365,32 +548,29 @@ public class Api {
         party.time = "2016年10月17日 18:21:22";
         party.type = "歌舞";
         party.location = "成都XXXX地区";
+
         party.poster = "http://img4q.duitang.com/uploads/item/201506/14/20150614214047_BA5Zy.jpeg";
-
-
         return party;
     }
 
-    private Party[] getSomeMyParties() {
+    private List<Party> getSomeMyParties() {
         //TODO:假数据
-        Party[] party = new Party[2];
-        party[0] = new Party();
-        party[1] = new Party();
-        party[0].ID = 1;
-        party[0].name = "没什么名字1";
-        party[0].time = "2016年10月17日 18:20:29";
-        party[0].location = "成都XXXX地区";
-        party[0].type = "歌舞";
-        party[0].poster = "http://img4q.duitang.com/uploads/item/201506/14/20150614214047_BA5Zy.jpeg";
 
-        party[1].ID = 2;
-        party[1].name = "没什么名字2";
-        party[1].type = "歌舞";
-        party[1].time = "2016年10月17日 18:20:36";
-        party[1].location = "成都XXXX地区";
-        party[1].poster = "http://img4q.duitang.com/uploads/item/201506/14/20150614214047_BA5Zy.jpeg";
+        List<Party> parties=new ArrayList<>();
+        Party party = new Party();
 
-        return party;
+        party.ID = 1;
+        party.name = "没什么名字1";
+        party.time = "2016年10月17日 18:20:29";
+        party.location = "成都XXXX地区";
+        party.type = "歌舞";
+          party.poster = "http://img4q.duitang.com/uploads/item/201506/14/20150614214047_BA5Zy.jpeg";
+
+        parties.add(party);
+
+
+
+        return parties;
     }
 
 
