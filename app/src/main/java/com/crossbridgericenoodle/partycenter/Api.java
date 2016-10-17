@@ -15,6 +15,7 @@ import com.crossbridgericenoodle.partycenter.model.Danmu;
 import com.crossbridgericenoodle.partycenter.model.Party;
 import com.crossbridgericenoodle.partycenter.model.Position;
 import com.crossbridgericenoodle.partycenter.model.ProgrammeInfo;
+import com.crossbridgericenoodle.partycenter.model.User;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -42,14 +43,14 @@ public class Api {
     public static final int COMMENT=0;
     public static final int DANMU=1;
 
-    public static final int REGISTER_USERNAME_CONFLICT=0;
-    public static final int REGISTER_EMAIL_CONFLICT=1;
-    public static final int REGISTER_OK=2;
-    public static final int REGISTER_SYS_ERR=3;
+    public static final int REGISTER_USERNAME_CONFLICT=0;//注册,用户名被使用
+    public static final int REGISTER_EMAIL_CONFLICT=1;//注册,邮箱已经被使用
+    public static final int REGISTER_OK=2;//注册成功
+    public static final int REGISTER_SYS_ERR=3;//注册,服务器错误.
 
-    public static final int LOGIN_USERNAME_NOEXIST=0;
-    public static final int LOGIN_PASSRORD_WRONG=1;
-    public static final int LOGIN_OK=2;
+    public static final int LOGIN_USERNAME_NOEXIST=0;//登录.用户不存在
+    public static final int LOGIN_PASSRORD_WRONG=1;//登录,密码错误
+    public static final int LOGIN_OK=2;//登录,成功
 
 
     private RequestQueue queue;
@@ -68,6 +69,7 @@ public class Api {
     /**
      * 获取周围的晚会信息,返回值的晚会信息不完整
      * 然后在进去详细信息的时候在用API的函数去用ID读取信息
+     * 返回的晚会信息只包括了 ID ,name,time,location,poster,其他属性不可用,获取更详细的信息请用ID去调用getPartyInfo
      *
      * @param position     当前位置 经度纬度
      * @param range        半径范围
@@ -113,7 +115,7 @@ public class Api {
      * 登录方法
      * @param userNameOrEmail 用户名或者邮箱
      * @param password 密码
-     * @param listener 回调, 返回状态
+     * @param listener 回调, 返回状态,详细看前面的常量
      */
     public void login(String userNameOrEmail, String password, OnResultListener<Integer> listener) {
         listener.getResult(new Integer(LOGIN_OK));
@@ -148,12 +150,48 @@ public class Api {
      * @param userName 注册的用户名
      * @param email 邮箱
      * @param password 密码
-     * @param listener 回调 返回整数,对应不同状态
+     * @param listener 回调 返回整数,对应不同状态,详细看前面的常量
      *
      */
     public void register(String userName,String email,String password,OnResultListener<Integer> listener){
         listener.getResult(new Integer(REGISTER_OK));
     }
+
+    /**
+     * 退出登录
+     */
+    public void logout(){
+        JSONObject sendObj=new JSONObject();
+        try {
+            sendObj.put("method","logout");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        JsonObjectRequest request=new JsonObjectRequest(Request.Method.POST, host + ":" + port + "/" + USER_URL, sendObj, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+
+        queue.add(request);
+    }
+
+    /**
+     * 获取用户信息
+     * @param listener
+     */
+    public void getUserInfo(OnResultListener<User> listener){
+
+    }
+
+
 
 
 

@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.crossbridgericenoodle.partycenter.Api;
 import com.crossbridgericenoodle.partycenter.R;
@@ -52,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case R.id.tab_info:
                         viewPager.setCurrentItem(2);
+
                         break;
 
                 }
