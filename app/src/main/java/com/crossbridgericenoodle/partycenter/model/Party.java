@@ -1,6 +1,11 @@
 package com.crossbridgericenoodle.partycenter.model;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+
+import java.io.IOException;
 import java.io.Serializable;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +27,8 @@ public class Party implements Serializable {
     public String poster;
     public String detail;
     public String comments;
+
+
 
 
 }

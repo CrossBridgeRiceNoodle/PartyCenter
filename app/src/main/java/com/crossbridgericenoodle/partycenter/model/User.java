@@ -5,11 +5,15 @@ package com.crossbridgericenoodle.partycenter.model;
  */
 
 public class User {
+    public static final int SEX_MAN=1;
+    public static final int SEX_WOMAN=0;
+
+
     public int ID;
     public int type;
     public String name;
     public String email;
-    public String sex;
+    public int sex;
 
 
 }
