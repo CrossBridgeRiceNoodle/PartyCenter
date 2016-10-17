@@ -1,0 +1,15 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="cynthia.library.MainActivity">
+
+    <item
+        android:id="@+id/action_exit_login"
+        android:title="@string/menu_first_item"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_exit_system"
+        android:title="@string/menu_second_item"
+        app:showAsAction="never" />
+
+</menu>
