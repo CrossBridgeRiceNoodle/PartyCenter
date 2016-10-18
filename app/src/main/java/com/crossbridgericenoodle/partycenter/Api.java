@@ -8,9 +8,6 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.HttpClientStack;
-import com.android.volley.toolbox.HttpStack;
-import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
@@ -25,7 +22,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.net.CookieStore;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -187,14 +183,14 @@ public class Api {
             public void onErrorResponse(VolleyError error) {
 
             }
-        }){
+        }) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
 
                 if (connectID != null && connectID.length() > 0) {
                     Map<String, String> header = new HashMap<>();
                     header.put("cookie", connectID);
-                    connectID=null;
+                    connectID = null;
                     return header;
                 } else {
                     return super.getHeaders();
@@ -213,13 +209,7 @@ public class Api {
      * @param listener 回调
      */
     public void getUserInfo(OnResultListener<User> listener) {
-//        User user=new User();
-//        user.email="asdwsa@qwq.com";
-//        user.type=User.TYPE_AUDIENCE;
-//        user.ID=1;
-//        user.name="什么鬼名字";
-//        user.sex=User.SEX_MAN;
-//        listener.getResult(user);
+
         getUserInfo(host + ":" + port + "/" + USER_URL, listener);
 
     }
@@ -231,6 +221,7 @@ public class Api {
      * @param party
      * @param listener
      */
+    @Deprecated
     public void editParty(String url, Party party, OnResultListener<Integer> listener) {
         JSONObject sendObj = new JSONObject();
 
