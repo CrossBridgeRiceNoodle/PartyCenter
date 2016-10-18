@@ -16,6 +16,6 @@ public class ProgrammeInfo {
     }
 
     public ProgrammeInfo(JSONObject jsonObject) throws JSONException {
-        this(jsonObject.getString("show"),jsonObject.getString("actors"));
+        this(jsonObject.getString("show"), jsonObject.getString("actors"));
     }
 }

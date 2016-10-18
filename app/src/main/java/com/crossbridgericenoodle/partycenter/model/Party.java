@@ -17,18 +17,16 @@ public class Party implements Serializable {
     public int ID;
     public String name;
     public String time;
-    public  String location;
+    public String location;
     public Position location_lo_la;
     public String type;
     public String publisher;
-    public List<ProgrammeInfo> programsInfo=new ArrayList<>();
+    public List<ProgrammeInfo> programsInfo = new ArrayList<>();
     public String host;
     public int vote;
     public String poster;
     public String detail;
     public List<Comment> comments=new ArrayList<>();
-
-
 
 
 }

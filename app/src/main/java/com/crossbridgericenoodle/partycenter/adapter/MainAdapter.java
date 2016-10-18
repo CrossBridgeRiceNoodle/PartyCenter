@@ -12,9 +12,9 @@ import java.util.List;
 public class MainAdapter extends FragmentPagerAdapter {
     private Fragment[] fragments;
 
-    public MainAdapter(FragmentManager fm,Fragment[] fs) {
+    public MainAdapter(FragmentManager fm, Fragment[] fs) {
         super(fm);
-        fragments=fs;
+        fragments = fs;
     }
 
 

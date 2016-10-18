@@ -25,6 +25,11 @@ public class MainActivity extends BaseActivity {
         setContentView(R.layout.activity_main);
 
         initView();
+
+        //如果打开此活动的目的是登录，那么直接跳转到个人中心碎片
+        if (getIntent().getBooleanExtra("LOGIN_PURPOSE", false)) {
+            bottomBar.selectTabAtPosition(2);
+        }
     }
 
     private void initView() {
@@ -45,17 +50,16 @@ public class MainActivity extends BaseActivity {
                     case R.id.tab_info:
                         viewPager.setCurrentItem(2);
                         break;
-
                 }
             }
         });
 
+        viewPager.setAdapter(new MainAdapter(getSupportFragmentManager(),
+                new Fragment[]{new LatestPartyFragment(), new AroundPartyFragment(), new UserInfoFragment()}));
 
-        viewPager.setAdapter(new MainAdapter(getSupportFragmentManager(), new Fragment[]{new LatestPartyFragment(), new AroundPartyFragment(), new UserInfoFragment()}));
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
             }
 
             @Override

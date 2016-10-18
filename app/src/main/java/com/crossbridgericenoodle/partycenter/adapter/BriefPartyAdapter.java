@@ -15,15 +15,11 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-/**
- * Created by 92019 on 2016/10/17.
- */
-
-public class LatestPartyAdapter extends BaseAdapter {
+public class BriefPartyAdapter extends BaseAdapter {
     private List<Party> partyList;
     private Context context;
 
-    public LatestPartyAdapter(List<Party> partyList, Context context) {
+    public BriefPartyAdapter(List<Party> partyList, Context context) {
         this.partyList = partyList;
         this.context = context;
     }
@@ -54,7 +50,7 @@ public class LatestPartyAdapter extends BaseAdapter {
         View view = null;
         ViewHolder viewHolder;
         if (convertView == null) {
-            view = LayoutInflater.from(context).inflate(R.layout.lastest_party_list_item, null);
+            view = LayoutInflater.from(context).inflate(R.layout.brief_party_list_item, null);
             viewHolder = new ViewHolder();
             viewHolder.name = (TextView) view.findViewById(R.id.tv_latest_name);
             viewHolder.time = (TextView) view.findViewById(R.id.tv_latest_time);

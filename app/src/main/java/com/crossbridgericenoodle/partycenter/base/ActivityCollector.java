@@ -2,6 +2,10 @@ package com.crossbridgericenoodle.partycenter.base;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+
+import com.crossbridgericenoodle.partycenter.UserManager;
+import com.crossbridgericenoodle.partycenter.activity.MainActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,9 +29,15 @@ public class ActivityCollector {
         }
     }
 
-    public static void signInAgain(Context context) {
-//        finishAll();
-//        Intent intent = new Intent(context, LoginActivity.class);
-//        context.startActivity(intent);
+    public static void loginAgain(Context context) {
+        UserManager.logout();
+        stepToLogin(context);
+    }
+
+    public static void stepToLogin(Context context) {
+        finishAll();
+        Intent intent = new Intent(context, MainActivity.class);
+        intent.putExtra("LOGIN_PURPOSE", true);
+        context.startActivity(intent);
     }
 }
