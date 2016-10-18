@@ -4,7 +4,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * Created by qianzise on 2016/10/15 0015.
+ * 位置模型
  */
 public class Position {
     public double lat;//经度
@@ -16,7 +16,7 @@ public class Position {
         this.lng = Double.valueOf(lola[0]);
     }
 
-    public Position(int lat, int lng) {
+    public Position(double lat, double lng) {
         this.lat = lat;
         this.lng = lng;
     }

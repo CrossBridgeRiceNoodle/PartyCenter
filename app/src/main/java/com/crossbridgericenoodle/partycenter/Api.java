@@ -2,6 +2,8 @@ package com.crossbridgericenoodle.partycenter;
 
 import android.util.Log;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -9,6 +11,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.crossbridgericenoodle.partycenter.model.Comment;
 import com.crossbridgericenoodle.partycenter.model.Danmu;
 import com.crossbridgericenoodle.partycenter.model.Party;
 import com.crossbridgericenoodle.partycenter.model.Position;
@@ -21,7 +24,9 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by FENG-MASTER on 2016/10/15 0015.
@@ -44,8 +49,6 @@ public class Api {
     public static final int REGISTER_OK = 2;//注册成功
     public static final int REGISTER_SYS_ERR = 3;//注册,服务器错误.
 
-    public static final int REGISTER_TYPE_AUDIENCE = 1;
-    public static final int REGISTER_TYPE_HOST = 0;
 
     public static final int LOGIN_USERNAME_NOEXIST = 0;//登录.用户不存在
     public static final int LOGIN_PASSRORD_WRONG = 1;//登录,密码错误
@@ -53,6 +56,7 @@ public class Api {
 
 
     private RequestQueue queue;
+    private String connectID = null;
 
     private static Api instance = new Api();
 
@@ -79,9 +83,8 @@ public class Api {
      * @param listener     回调
      */
     public void getNearbyParties(Position position, int range, int obtainedRows, int row, String type, Date nowDate, OnResultListener<List<Party>> listener) {
-        listener.getResult(getSomeMyParties());
 
-        //       getNearbyParties(host+":"+port+"/"+PARTY_URL,position,range,obtainedRows,row,type,nowDate,listener);
+        getNearbyParties(host + ":" + port + "/" + PARTY_URL, position, range, obtainedRows, row, type, nowDate, listener);
     }
 
     /**
@@ -91,23 +94,20 @@ public class Api {
      * @param listener 返回party的回调函数
      */
     public void getPartyInfo(int ID, OnResultListener<Party> listener) {
-        listener.getResult(getMyParty());
 
-        //   getPartyInfo(host+":"+port+"/"+PARTY_URL+"info/",ID,listener);
+        getPartyInfo(host + ":" + port + "/" + PARTY_URL + "info/", ID, listener);
     }
 
     /**
      * 获取最新的晚会信息,
-     * 返回值有特殊情况,不会返回完整的晚会信息,只有ID,name,time,location,poster而已,不要在代码中调用其他属性,会报错
+     * 返回值有特殊情况,不会返回完整的晚会信息,只有ID,name,time,type,location,poster而已,不要在代码中调用其他属性,会报错
      *
      * @param numOfParties 最多需要多少个最新的晚会信息(不一定返回那么多个)
      * @param listener     回调
      */
     public void getNewParties(int numOfParties, OnResultListener<List<Party>> listener) {
-        //TODO:假数据.
 
-        listener.getResult(getSomeMyParties());
-//        getNewParties(host + ":" + port + "/" + PARTY_URL, numOfParties, listener);
+        getNewParties(host + ":" + port + "/" + PARTY_URL, numOfParties, listener);
 
     }
 
@@ -119,8 +119,8 @@ public class Api {
      * @param listener        回调, 返回状态,详细看前面的常量
      */
     public void login(String userNameOrEmail, String password, OnResultListener<Integer> listener) {
-        listener.getResult(new Integer(LOGIN_OK));
-        //     login((host+":"+port+"/"+USER_URL,userNameOrEmail,password,listener);
+
+        login(host + ":" + port + "/" + USER_URL, userNameOrEmail, password, listener);
 
     }
 
@@ -132,19 +132,19 @@ public class Api {
      * @param comment 评论内容
      */
     public void sendComment(int partyID, String comment, OnResultListener<Boolean> listener) {
-        listener.getResult(new Boolean(true));
+
+        sendComment(host + ":" + port + "/" + PARTY_URL, partyID, comment, listener);
     }
 
     /**
      * 发送弹幕,需要先登录才能执行这个函数
      *
      * @param partyID  发送弹幕的晚会ID
-     * @param userName 发送弹幕的用户名
      * @param danmu    弹幕信息
+     * @param listener 回调
      */
-    public void sendDanmu(int partyID, String userName, Danmu danmu, OnResultListener<Boolean> listener) {
-        listener.getResult(new Boolean(true));
-
+    public void sendDanmu(int partyID, Danmu danmu, OnResultListener<Boolean> listener) {
+        sendDanmu(host + ":" + port + "/" + PARTY_URL, partyID, danmu, listener);
     }
 
     /**
@@ -153,10 +153,13 @@ public class Api {
      * @param userName 注册的用户名
      * @param email    邮箱
      * @param password 密码
+     * @param type     注册种类,user里的常量
+     * @param sex      性别
      * @param listener 回调 返回整数,对应不同状态,详细看前面的常量
      */
-    public void register(String userName, String email, String password, int type, OnResultListener<Integer> listener) {
-        listener.getResult(new Integer(REGISTER_OK));
+    public void register(String userName, String email, String password, int type, int sex, OnResultListener<Integer> listener) {
+
+        register(host + ":" + port + "/" + USER_URL, userName, email, password, type, sex, listener);
     }
 
     /**
@@ -180,23 +183,134 @@ public class Api {
             public void onErrorResponse(VolleyError error) {
 
             }
-        });
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+
+                if (connectID != null && connectID.length() > 0) {
+                    Map<String, String> header = new HashMap<>();
+                    header.put("cookie", connectID);
+                    connectID = null;
+                    return header;
+                } else {
+                    return super.getHeaders();
+                }
+
+            }
+
+        };
 
         queue.add(request);
     }
 
     /**
-     * 获取用户信息
+     * 获取当前用户信息(登录后再调用)
      *
-     * @param listener
+     * @param listener 回调
      */
     public void getUserInfo(OnResultListener<User> listener) {
 
+        getUserInfo(host + ":" + port + "/" + USER_URL, listener);
+
     }
 
+    /**
+     * 修改晚会信息,该接口未开放
+     *
+     * @param url
+     * @param party
+     * @param listener
+     */
+    @Deprecated
+    public void editParty(String url, Party party, OnResultListener<Integer> listener) {
+        JSONObject sendObj = new JSONObject();
 
-    private void sendComment(String url, int partyID, String comment, final OnResultListener<Integer> listener) {
-        //TODO:完成,未测试
+        JSONObject partyInfo = new JSONObject();
+        try {
+            partyInfo.put("ID", party.ID);
+            partyInfo.put("name", party.name);
+            partyInfo.put("time", party.time);
+            partyInfo.put("location", party.location);
+            partyInfo.put("location_lo_la", party.location_lo_la);
+            partyInfo.put("show_actors", party.programsInfo);
+            partyInfo.put("detail", party.detail);
+
+            sendObj.put("reNewPartyInfo", partyInfo);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, sendObj, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                //TODO:返回值的获取
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                //TODO:错误
+            }
+        });
+
+        queue.add(request);
+
+    }
+
+    private void getUserInfo(String url, final OnResultListener<User> listener) {
+        //测试通过
+        JSONObject sendObj = new JSONObject();
+        try {
+            sendObj.put("method", "getUserInfo");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, sendObj, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                User user = new User();
+                try {
+                    JSONObject obj = response.getJSONObject("userInfo");
+                    user.ID = obj.getInt("ID");
+                    user.type = obj.getInt("type");
+                    user.name = obj.getString("name");
+                    user.email = obj.getString("email");
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                listener.getResult(user);
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                listener.getResult(null);
+            }
+        }) {
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+
+                if (connectID != null && connectID.length() > 0) {
+                    Map<String, String> header = new HashMap<>();
+                    header.put("cookie", connectID);
+                    return header;
+                } else {
+                    return super.getHeaders();
+                }
+
+            }
+        };
+
+        queue.add(request);
+
+    }
+
+    private void sendComment(String url, int partyID, String comment, final OnResultListener<Boolean> listener) {
+        //测试通过
         JSONObject sendObj = new JSONObject();
         try {
             sendObj.put("method", "sendComment");
@@ -217,7 +331,7 @@ public class Api {
             @Override
             public void onResponse(JSONObject response) {
                 try {
-                    listener.getResult(new Integer(response.getInt("commentRes")));
+                    listener.getResult(response.getInt("commentRes") == 1);//返回0是错误,1是正确发送
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -225,16 +339,28 @@ public class Api {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                listener.getResult(false);
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+
+                if (connectID != null && connectID.length() > 0) {
+                    Map<String, String> header = new HashMap<>();
+                    header.put("cookie", connectID);
+                    return header;
+                } else {
+                    return super.getHeaders();
+                }
 
             }
-        });
+        };
 
         queue.add(request);
 
     }
 
     private void sendDanmu(String url, int partyID, Danmu danmu, final OnResultListener<Boolean> listener) {
-
         JSONObject sendObj = new JSONObject();
         try {
             sendObj.put("method", "sendComment");
@@ -276,15 +402,28 @@ public class Api {
             public void onErrorResponse(VolleyError error) {
                 Log.e("1", "1");
             }
-        });
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+
+                if (connectID != null && connectID.length() > 0) {
+                    Map<String, String> header = new HashMap<>();
+                    header.put("cookie", connectID);
+                    return header;
+                } else {
+                    return super.getHeaders();
+                }
+
+            }
+        };
 
         queue.add(request);
 
 
     }
 
-    private void register(String url, String userName, String email, int type, int sex, String password, final OnResultListener<Integer> listener) {
-        //TODO:完成了,未测试
+    private void register(String url, String userName, String email, String password, int type, int sex, final OnResultListener<Integer> listener) {
+        //完成
         JSONObject sendObj = new JSONObject();
         try {
             sendObj.put("method", "register");
@@ -303,7 +442,7 @@ public class Api {
             @Override
             public void onResponse(JSONObject response) {
                 try {
-                    listener.getResult(new Integer(response.getInt("state")));
+                    listener.getResult(response.getInt("state"));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -311,7 +450,7 @@ public class Api {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                listener.getResult(REGISTER_SYS_ERR);
             }
         });
 
@@ -320,8 +459,8 @@ public class Api {
 
     }
 
-    private void login(String url, String userNameOrEmail, String password, OnResultListener<Integer> listener) {
-        //TODO:完成 但未测试
+    private void login(String url, String userNameOrEmail, String password, final OnResultListener<Integer> listener) {
+        //完成,通过测试
         JSONObject sendObj = new JSONObject();
         try {
             sendObj.put("method", "login");
@@ -334,6 +473,7 @@ public class Api {
                 data.put("name", userNameOrEmail);
                 data.put("email", "");
             }
+            data.put("password", password);
 
             sendObj.put("userInfo", data);
 
@@ -344,14 +484,27 @@ public class Api {
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, sendObj, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
+                try {
+                    listener.getResult(response.getJSONObject("login").getInt("state"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
 
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                listener.getResult(Integer.valueOf(LOGIN_USERNAME_NOEXIST));
             }
-        });
+        }) {
+
+            @Override
+            protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
+                String cookies = response.headers.get("Set-Cookie");
+                connectID = cookies.substring(0, cookies.indexOf(";"));
+                return super.parseNetworkResponse(response);
+            }
+        };
 
 
         queue.add(request);
@@ -427,7 +580,7 @@ public class Api {
     }
 
     private void getPartyInfo(final String url, int ID, final OnResultListener<Party> listener) {
-        //TODO:完成 未测试
+        //完成,通过测试
         JSONObject sendJson = new JSONObject();
         try {
             sendJson.put("method", "getPartyDetailInfo");
@@ -453,16 +606,18 @@ public class Api {
                     party.detail = response.getString("detail");
                     party.publisher = response.getString("partyPublisher");
                     party.host = response.getString("partyHosts");
-
+                    party.poster = host + ":" + port + response.getString("posterURL");
                     JSONArray array = response.getJSONArray("shows");
                     for (int i = 0; i < array.length(); i++) {
                         party.programsInfo.add(new ProgrammeInfo(array.getJSONObject(i)));
                     }
 
-                    party.comments = response.getString("comments");
-
-
-                    party.poster = host + ":" + port + response.getString("poster");
+                    JSONArray commentsArr = response.getJSONArray("comments");
+                    int len = commentsArr.length();
+                    for (int i = 0; i < len; i++) {
+                        JSONObject comment = commentsArr.getJSONObject(i);
+                        party.comments.add(new Comment(comment.getString("userName"), comment.getString("content")));
+                    }
 
 
                 } catch (JSONException e) {
@@ -475,14 +630,15 @@ public class Api {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.e("1", "23");
+                listener.getResult(null);
             }
         });
         queue.add(request);
     }
 
     private void getNewParties(String url, int num, final OnResultListener<List<Party>> listener) {
-        //TODO:未测试
+        //通过测试
+
         /*
         * 传出格式
         * method:getNewParties
@@ -524,7 +680,7 @@ public class Api {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.e("11", "11");
+                listener.getResult(null);
             }
         });
 
