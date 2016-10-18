@@ -7,8 +7,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.crossbridgericenoodle.partycenter.Api;
+import com.crossbridgericenoodle.partycenter.App;
 import com.crossbridgericenoodle.partycenter.R;
 import com.crossbridgericenoodle.partycenter.model.Party;
+import com.squareup.picasso.Picasso;
 
 /**
  * 这个是晚会的详细页面
@@ -30,7 +32,6 @@ public class PartyActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_party);
-        setTitle(party.name);
 
         party = (Party) getIntent().getSerializableExtra("party_selected");
 
@@ -56,8 +57,7 @@ public class PartyActivity extends AppCompatActivity {
         type.setText(party.type);
         publisher.setText(party.publisher);
         host.setText(party.host);
-        //TODO ImageView源文件设置，以及显示大小的设置
-
+        Picasso.with(App.getContext()).load(party.poster).into(poster);
     }
 
 }
