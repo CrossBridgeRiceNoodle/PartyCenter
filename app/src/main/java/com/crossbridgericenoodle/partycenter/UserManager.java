@@ -17,4 +17,8 @@ public class UserManager {
     public static void logout() {
         currentUser = null;
     }
+
+    public static boolean isLogined() {
+        return currentUser != null;
+    }
 }
