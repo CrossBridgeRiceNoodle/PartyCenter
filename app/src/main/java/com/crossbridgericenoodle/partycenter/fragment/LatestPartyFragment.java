@@ -12,11 +12,9 @@ import android.widget.ListView;
 import com.crossbridgericenoodle.partycenter.Api;
 import com.crossbridgericenoodle.partycenter.R;
 import com.crossbridgericenoodle.partycenter.activity.PartyActivity;
-import com.crossbridgericenoodle.partycenter.adapter.LatestPartyAdapter;
+import com.crossbridgericenoodle.partycenter.adapter.BriefPartyAdapter;
 import com.crossbridgericenoodle.partycenter.model.Party;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 
@@ -25,7 +23,6 @@ import java.util.List;
  */
 public class LatestPartyFragment extends Fragment {
 
-    private View view;
     ListView listView;
     List<Party> latestPartyList;
 
@@ -38,14 +35,14 @@ public class LatestPartyFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        view = inflater.inflate(R.layout.fragment_latest_party, container, false);
+        View view = inflater.inflate(R.layout.fragment_latest_party, container, false);
         listView = (ListView) view.findViewById(R.id.lv_latest_party);
 
         Api.getInstance().getNewParties(10, new Api.OnResultListener<List<Party>>() {
             @Override
             public void getResult(List<Party> parties) {
                 latestPartyList = parties;
-                LatestPartyAdapter adapter = new LatestPartyAdapter(latestPartyList, getContext());
+                BriefPartyAdapter adapter = new BriefPartyAdapter(latestPartyList, getContext());
                 listView.setAdapter(adapter);
             }
         });

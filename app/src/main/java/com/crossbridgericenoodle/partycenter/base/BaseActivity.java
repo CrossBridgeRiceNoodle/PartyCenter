@@ -6,9 +6,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.crossbridgericenoodle.partycenter.R;
+import com.crossbridgericenoodle.partycenter.UserManager;
 
 public class BaseActivity extends AppCompatActivity {
+    private static final int MENU_ITEM_LOGIN = 0;
+    private static final int MENU_ITEM_LOGOUT = 1;
+    private static final int MENU_ITEM_EXIT = 2;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -23,14 +26,18 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     /**
-     * 当点击右上角菜单键的时候调用此方法
-     *
-     * @param menu 此处为展示这个菜单，菜单布局为R.menu.menu_main
+     * 每次使用菜单，对其进行动态加载
      */
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        menu.clear();
+        if (UserManager.isLogined()) {
+            menu.add(0, MENU_ITEM_LOGIN, 1, "退出登录");
+        } else {
+            menu.add(0, MENU_ITEM_LOGOUT, 1, "登录");
+        }
+        menu.add(0, MENU_ITEM_EXIT, 2, "退出系统");
         return true;
     }
 
@@ -42,11 +49,15 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_exit_login: {
-                ActivityCollector.signInAgain(this);
+            case MENU_ITEM_LOGIN: {
+                ActivityCollector.stepToLogin(this);
                 break;
             }
-            case R.id.action_exit_system: {
+            case MENU_ITEM_LOGOUT: {
+                ActivityCollector.loginAgain(this);
+                break;
+            }
+            case MENU_ITEM_EXIT: {
                 ActivityCollector.finishAll();
                 break;
             }
