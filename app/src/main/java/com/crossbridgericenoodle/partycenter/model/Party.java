@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by qianzise on 2016/10/15 0015.
+ * 晚会模型
  */
 public class Party implements Serializable {
 
@@ -26,7 +26,7 @@ public class Party implements Serializable {
     public int vote;
     public String poster;
     public String detail;
-    public String comments;
+    public List<Comment> comments=new ArrayList<>();
 
 
 

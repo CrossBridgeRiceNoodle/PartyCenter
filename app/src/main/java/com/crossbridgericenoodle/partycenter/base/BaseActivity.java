@@ -6,7 +6,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.crossbridgericenoodle.partycenter.Api;
 import com.crossbridgericenoodle.partycenter.R;
+import com.crossbridgericenoodle.partycenter.model.Party;
+import com.crossbridgericenoodle.partycenter.model.User;
 
 public class BaseActivity extends AppCompatActivity {
 
@@ -44,6 +47,12 @@ public class BaseActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_exit_login: {
                 ActivityCollector.signInAgain(this);
+                Api.getInstance().getPartyInfo(1, new Api.OnResultListener<Party>() {
+                    @Override
+                    public void getResult(Party party) {
+
+                    }
+                });
                 break;
             }
             case R.id.action_exit_system: {

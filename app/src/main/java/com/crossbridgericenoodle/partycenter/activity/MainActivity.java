@@ -44,7 +44,6 @@ public class MainActivity extends BaseActivity {
                         break;
                     case R.id.tab_info:
                         viewPager.setCurrentItem(2);
-
                         break;
 
                 }
