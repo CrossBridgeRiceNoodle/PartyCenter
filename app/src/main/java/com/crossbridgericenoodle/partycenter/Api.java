@@ -28,9 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by FENG-MASTER on 2016/10/15 0015.
- */
+//TODO 说好的获取评论的API在哪
 public class Api {
     public static final String DEFAULT_HOST = "http://192.168.1.114";
     public static final String DEFAULT_PORT = "3000";
