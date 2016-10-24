@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
 import com.crossbridgericenoodle.partycenter.R;
+import com.crossbridgericenoodle.partycenter.model.Comment;
 
 import java.util.List;
 

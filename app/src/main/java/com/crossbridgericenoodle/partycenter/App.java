@@ -4,7 +4,7 @@ import android.app.Application;
 import android.content.Context;
 
 /**
- * Created by qianzise on 2016/10/15 0015.
+ * APP全局入口,定义了一个可以方便获取上下文的方法
  */
 public class App extends Application {
 

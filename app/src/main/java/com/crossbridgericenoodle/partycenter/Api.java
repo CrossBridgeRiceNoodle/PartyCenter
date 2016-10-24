@@ -30,6 +30,8 @@ import java.util.Map;
 
 //TODO 说好的获取评论的API在哪
 public class Api {
+    private final boolean DEBUG=true;
+
     public static final String DEFAULT_HOST = "http://192.168.1.114";
     public static final String DEFAULT_PORT = "3000";
 
@@ -81,7 +83,10 @@ public class Api {
      * @param listener     回调
      */
     public void getNearbyParties(Position position, int range, int obtainedRows, int row, String type, Date nowDate, OnResultListener<List<Party>> listener) {
-
+        if (DEBUG){
+            listener.getResult(getSomeMyParties());
+            return;
+        }
         getNearbyParties(host + ":" + port + "/" + PARTY_URL, position, range, obtainedRows, row, type, nowDate, listener);
     }
 
@@ -92,7 +97,10 @@ public class Api {
      * @param listener 返回party的回调函数
      */
     public void getPartyInfo(int ID, OnResultListener<Party> listener) {
-
+        if (DEBUG){
+            listener.getResult(getMyParty());
+            return;
+        }
         getPartyInfo(host + ":" + port + "/" + PARTY_URL + "info/", ID, listener);
     }
 
@@ -104,7 +112,10 @@ public class Api {
      * @param listener     回调
      */
     public void getNewParties(int numOfParties, OnResultListener<List<Party>> listener) {
-
+        if (DEBUG){
+            listener.getResult(getSomeMyParties());
+            return;
+        }
         getNewParties(host + ":" + port + "/" + PARTY_URL, numOfParties, listener);
 
     }
@@ -117,7 +128,10 @@ public class Api {
      * @param listener        回调, 返回状态,详细看前面的常量
      */
     public void login(String userNameOrEmail, String password, OnResultListener<Integer> listener) {
-
+        if (DEBUG){
+            listener.getResult(LOGIN_OK);
+            return;
+        }
         login(host + ":" + port + "/" + USER_URL, userNameOrEmail, password, listener);
 
     }
@@ -130,7 +144,10 @@ public class Api {
      * @param comment 评论内容
      */
     public void sendComment(int partyID, String comment, OnResultListener<Boolean> listener) {
-
+        if (DEBUG){
+            listener.getResult(true);
+            return;
+        }
         sendComment(host + ":" + port + "/" + PARTY_URL, partyID, comment, listener);
     }
 
@@ -142,6 +159,10 @@ public class Api {
      * @param listener 回调
      */
     public void sendDanmu(int partyID, Danmu danmu, OnResultListener<Boolean> listener) {
+        if (DEBUG){
+            listener.getResult(true);
+            return;
+        }
         sendDanmu(host + ":" + port + "/" + PARTY_URL, partyID, danmu, listener);
     }
 
@@ -156,7 +177,10 @@ public class Api {
      * @param listener 回调 返回整数,对应不同状态,详细看前面的常量
      */
     public void register(String userName, String email, String password, int type, int sex, OnResultListener<Integer> listener) {
-
+        if (DEBUG){
+            listener.getResult(REGISTER_OK);
+            return;
+        }
         register(host + ":" + port + "/" + USER_URL, userName, email, password, type, sex, listener);
     }
 
@@ -164,42 +188,13 @@ public class Api {
      * 退出登录,完成
      */
     public void logout() {
-        JSONObject sendObj = new JSONObject();
-        try {
-            sendObj.put("method", "logout");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, host + ":" + port + "/" + USER_URL, sendObj, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-            }
-        }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-
-                if (connectID != null && connectID.length() > 0) {
-                    Map<String, String> header = new HashMap<>();
-                    header.put("cookie", connectID);
-                    connectID = null;
-                    return header;
-                } else {
-                    return super.getHeaders();
-                }
-
-            }
-
-        };
-
-        queue.add(request);
+      if (DEBUG){
+          return;
+      }
+        logout(host + ":" + port + "/" + USER_URL);
     }
+
+
 
     /**
      * 获取当前用户信息(登录后再调用)
@@ -207,7 +202,16 @@ public class Api {
      * @param listener 回调
      */
     public void getUserInfo(OnResultListener<User> listener) {
-
+        if (DEBUG){
+            User user=new User();
+            user.name="新用户";
+            user.sex=User.SEX_MAN;
+            user.ID=1;
+            user.type=User.TYPE_HOST;
+            user.email="1234565@qq.com";
+            listener.getResult(user);
+            return;
+        }
         getUserInfo(host + ":" + port + "/" + USER_URL, listener);
 
     }
@@ -253,6 +257,44 @@ public class Api {
 
         queue.add(request);
 
+    }
+
+    private void logout(String url){
+        JSONObject sendObj = new JSONObject();
+        try {
+            sendObj.put("method", "logout");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, sendObj, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+
+                if (connectID != null && connectID.length() > 0) {
+                    Map<String, String> header = new HashMap<>();
+                    header.put("cookie", connectID);
+                    connectID = null;
+                    return header;
+                } else {
+                    return super.getHeaders();
+                }
+
+            }
+
+        };
+
+        queue.add(request);
     }
 
     private void getUserInfo(String url, final OnResultListener<User> listener) {
