@@ -10,6 +10,7 @@ import com.crossbridgericenoodle.partycenter.App;
 import com.crossbridgericenoodle.partycenter.R;
 import com.crossbridgericenoodle.partycenter.adapter.CommentListAdapter;
 import com.crossbridgericenoodle.partycenter.base.BaseActivity;
+import com.crossbridgericenoodle.partycenter.model.Comment;
 import com.crossbridgericenoodle.partycenter.model.Party;
 import com.squareup.picasso.Picasso;
 
@@ -41,7 +42,7 @@ public class PartyActivity extends BaseActivity {
         initView();
         initViewInfo();
         getCommentList();
-        //TODO 晚会评论区的加载
+
         listView.setAdapter(new CommentListAdapter(this, commentList));
     }
 

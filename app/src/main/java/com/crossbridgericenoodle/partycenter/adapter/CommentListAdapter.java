@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.TextView;
 
 import com.crossbridgericenoodle.partycenter.R;
 import com.crossbridgericenoodle.partycenter.model.Comment;
@@ -12,7 +13,6 @@ import com.crossbridgericenoodle.partycenter.model.Comment;
 import java.util.List;
 
 public class CommentListAdapter extends BaseAdapter {
-    //TODO 需要真正的评论实体类
     private List<Comment> commentList;
     private Context context;
 
@@ -29,14 +29,15 @@ public class CommentListAdapter extends BaseAdapter {
         if (convertView == null) {
             view = LayoutInflater.from(context).inflate(R.layout.comment_list_item, null);
             viewHolder = new ViewHolder();
-            //TODO ViewHolder.域.findViewById()
+            viewHolder.userName = (TextView) view.findViewById(R.id.tv_name);
+            viewHolder.content = (TextView) view.findViewById(R.id.tv_content);
             view.setTag(viewHolder);
         } else {
             view = convertView;
             viewHolder = (ViewHolder) view.getTag();
         }
-        //TODO ViewHolder.域.setText()
-
+        viewHolder.userName.setText(comment.getUserName());
+        viewHolder.content.setText(comment.getContent());
         return view;
     }
 
@@ -56,6 +57,7 @@ public class CommentListAdapter extends BaseAdapter {
     }
 
     private class ViewHolder {
-
+        TextView userName;
+        TextView content;
     }
 }
