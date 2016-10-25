@@ -732,7 +732,7 @@ public class Api {
 
 
     private Party getMyParty() {
-        //TODO:假数据.
+
         Party party = new Party();
         party.ID = 1;
         party.name = "没什么名字1";
@@ -740,12 +740,26 @@ public class Api {
         party.type = "歌舞";
         party.location = "成都XXXX地区";
 
+        party.publisher="新的发布方";
+        party.host="电子科技大学(举办方)";
+        party.programsInfo.add(new ProgrammeInfo("江南","林俊杰"));
+        party.programsInfo.add(new ProgrammeInfo("情歌串烧","周杰伦"));
+        party.programsInfo.add(new ProgrammeInfo("新贵妃醉酒","费玉清"));
+        party.programsInfo.add(new ProgrammeInfo("小品","特别嘉宾"));
+
+        party.comments.add(new Comment("用户1","这晚会好好看哦"));
+        party.comments.add(new Comment("用户2","怎么发射弹幕啊?"));
+
+        party.detail="　在这灯花与微笑构成的舞台，在这温馨与永恒铸成的圣地。\n" +
+                "　　我们欢聚在一堂，共同度过这个美好而难忘的夜晚。\n" +
+                "　　流金岁月，三年的   生活已经匆匆而逝，我们在这里学习，在这里成长。\n" +
+                "　　四季更迭，任万物瞬息万变，我们未曾改变，一段深深的情，一颗感恩的心。\n" +
+                "　　让我们在最美的年华里，共同谱写最动听的青春乐章！";
         party.poster = "http://img4q.duitang.com/uploads/item/201506/14/20150614214047_BA5Zy.jpeg";
         return party;
     }
 
     private List<Party> getSomeMyParties() {
-        //TODO:假数据
 
         List<Party> parties = new ArrayList<>();
         Party party = new Party();
@@ -756,6 +770,19 @@ public class Api {
         party.location = "成都XXXX地区";
         party.type = "歌舞";
         party.poster = "http://img4q.duitang.com/uploads/item/201506/14/20150614214047_BA5Zy.jpeg";
+        party.publisher="新的发布方";
+        party.programsInfo.add(new ProgrammeInfo("江南","林俊杰"));
+        party.programsInfo.add(new ProgrammeInfo("情歌串烧","周杰伦"));
+        party.programsInfo.add(new ProgrammeInfo("新贵妃醉酒","费玉清"));
+        party.programsInfo.add(new ProgrammeInfo("小品","特别嘉宾"));
+        party.host="电子科技大学(举办方)";
+        party.detail="　在这灯花与微笑构成的舞台，在这温馨与永恒铸成的圣地。\n" +
+                "　　我们欢聚在一堂，共同度过这个美好而难忘的夜晚。\n" +
+                "　　流金岁月，三年的   生活已经匆匆而逝，我们在这里学习，在这里成长。\n" +
+                "　　四季更迭，任万物瞬息万变，我们未曾改变，一段深深的情，一颗感恩的心。\n" +
+                "　　让我们在最美的年华里，共同谱写最动听的青春乐章！";
+        party.comments.add(new Comment("用户1","这晚会好好看哦"));
+        party.comments.add(new Comment("用户2","怎么发射弹幕啊?"));
 
         parties.add(party);
 
