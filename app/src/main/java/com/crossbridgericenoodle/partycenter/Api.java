@@ -1,5 +1,6 @@
 package com.crossbridgericenoodle.partycenter;
 
+import android.graphics.Color;
 import android.util.Log;
 
 import com.android.volley.AuthFailureError;
@@ -97,6 +98,8 @@ public class Api {
      * @param listener 返回party的回调函数
      */
     public void getPartyInfo(int ID, OnResultListener<Party> listener) {
+
+
         if (DEBUG){
             listener.getResult(getMyParty());
             return;

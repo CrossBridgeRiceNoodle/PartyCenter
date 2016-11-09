@@ -18,7 +18,7 @@ public class Danmu {
 
     public int type;
     public int size;
-    public Color color;
+    public int color;
     public String content;
 
 }
